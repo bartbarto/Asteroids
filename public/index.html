@@ -1,30 +1,50 @@
-
 <!-- saved from url=(0051)http://www.mrdoob.com/lab/javascript/webgl/city/01/ -->
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-		<title>Fly.kerm.is</title>
-		<style>
-			body {
-				background-color: #d8e7ff;
-				font-family: Monospace;
-				cursor: url(cursor.png), auto;
-				margin: 0;
-				overflow: hidden;
-			}
-		</style>
-	<style type="text/css"></style></head>
-	<body>
-		<script src="js/three.min.js"></script>
-		<script src="js/FirstPersonControls.js"></script>
+<html>
 
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <title>Fly</title>
+    <style>
+    body {
+        background-color: #d8e7ff;
+        font-family: Monospace;
+        cursor: url(cursor.png), auto;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+    }
+    canvas{
+    	position: absolute;
+    }
+    .info{
+    	position: absolute;
+    	z-index: 100;
+    }
+    </style>
+    <style type="text/css"></style>
+</head>
 
-		<script src="js/levels.js"></script>
-		<script src="js/scene.js"></script>
-		<script src="js/game.js"></script>
+<body>
+    <canvas></canvas>
+    <div style="position: absolute; left: 0px; top: 15px; width: 100%; color: rgba(0, 0, 64, 0.498039); text-align: center;" class="info">Press Space to Start</div>
 
-		<script src="js/main.js"></script>
+    <!-- Libraries -->
+    <script src="js/libs/three.min.js"></script>
+    <script src="js/libs/leap-0.5.0.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
-		<canvas ></canvas><div style="position: absolute; left: 0px; top: 15px; width: 100%; color: rgba(0, 0, 64, 0.498039); text-align: center;" class="info">Press Space to Start</div>
+    <!-- Edited Libraries & controllers-->
+    <script src="js/FirstPersonControls.js"></script>
+    <script src="js/leap.js"></script>
+
+    <!-- Game stuff -->
+    <script src="js/levels.js"></script>
+    <script src="js/scene.js"></script>
+    <script src="js/game.js"></script>
+
+    <script src="js/main.js"></script>
 
 
-</body></html>
+</body>
+
+</html>

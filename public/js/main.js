@@ -8,7 +8,7 @@ var gameOver = false;
 
 var level = 1;
 
-var plane;
+var plane, planeMaterial;
 
 init();
 animate();
@@ -36,14 +36,14 @@ function init() {
 
 
     gameControls.init();
-
+    controls.leapControl = true;
 
     sceneMaker.build();
 
     lastTime = performance.now();
 
 
-    var planeMaterial = new THREE.MeshLambertMaterial( {color: 0xEFEFEF, transparent: true});
+    planeMaterial = new THREE.MeshLambertMaterial( {color: 0xEFEFEF, transparent: true});
     plane = new THREE.Mesh(new THREE.CubeGeometry(40, 3, 3), planeMaterial);
     planeBody = new THREE.Mesh(new THREE.CubeGeometry(8, 3, 40), planeMaterial);
     planeBody.position.z = 10;
@@ -61,23 +61,12 @@ function init() {
 
     document.addEventListener( 'mousemove', function(){
 
-    	if(!controls.freeze){
+    	if(!controls.freeze && !controls.leapControl){
 	  		var x = (event.pageX/winW - 0.5);
 	  		var y = (event.pageY/winH - 0.5);
 
-	    	plane.rotation.y = -x;
-	    	plane.rotation.z = -1.5*x;
-	    	plane.rotation.x = -1.2*y;
+            planeControls.setWithMouse(x, y)
 
-	    	plane.position.y = -2 -50*y;
-
-	    	if(y < 0){
-	    		planeMaterial.opacity = 0.5;
-	    	}else if(y < 0.2){
-	    		planeMaterial.opacity = 0.75;
-	    	}else{
-	    		planeMaterial.opacity = 1;
-	    	}
     	}
     } );
 

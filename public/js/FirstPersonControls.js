@@ -54,6 +54,8 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 
 	this.allowKeys = true;
 
+	this.leapControl = true; // --> niet vergeten op false te zetten als er andere shite wordt gekozen
+
 	if ( this.domElement !== document ) {
 
 		this.domElement.setAttribute( 'tabindex', -1 );
@@ -126,16 +128,25 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 
 	this.onMouseMove = function ( event ) {
 
-		if ( this.domElement === document ) {
+		if ( this.domElement === document && !this.leapControl) {
 
 			this.mouseX = event.pageX - this.viewHalfX;
 			this.mouseY = event.pageY - this.viewHalfY;
 
-		} else {
+		} else if(!this.leapControl){
 
 			this.mouseX = event.pageX - this.domElement.offsetLeft - this.viewHalfX;
 			this.mouseY = event.pageY - this.domElement.offsetTop - this.viewHalfY;
 
+		}
+
+	};
+
+	this.leapMove = function (leftRight, upDown){
+
+		if(this.leapControl){
+			this.mouseX = -(1.7*leftRight) * this.viewHalfX;
+			this.mouseY = -(1.5*upDown) * this.viewHalfY;
 		}
 
 	};
@@ -264,6 +275,7 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 
 
 	this.domElement.addEventListener( 'contextmenu', function ( event ) { event.preventDefault(); }, false );
+
 
 	this.domElement.addEventListener( 'mousemove', bind( this, this.onMouseMove ), false );
 	this.domElement.addEventListener( 'mousedown', bind( this, this.onMouseDown ), false );
