@@ -54,7 +54,7 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 
 	this.allowKeys = true;
 
-	this.leapControl = true; // --> niet vergeten op false te zetten als er andere shite wordt gekozen
+	this.leapControl = false; // --> niet vergeten op false te zetten als er andere shite wordt gekozen
 
 	if ( this.domElement !== document ) {
 

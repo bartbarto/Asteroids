@@ -8,6 +8,9 @@ var gameOver = false;
 
 var level = 1;
 
+var movementScaleX = 1;
+var movementScaleY = 1;
+
 var plane, planeMaterial;
 
 init();
@@ -31,49 +34,92 @@ function init() {
 
 
     scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0xd0e0f0, 0.0025);
+    scene.fog = new THREE.FogExp2(0xd0e0f0, 0.00025);
     scene.add(camera);
 
 
     gameControls.init();
-    controls.leapControl = true;
+    controls.leapControl = false;
 
     sceneMaker.build();
 
     lastTime = performance.now();
 
 
-    planeMaterial = new THREE.MeshLambertMaterial( {color: 0xEFEFEF, transparent: true});
-    plane = new THREE.Mesh(new THREE.CubeGeometry(40, 3, 3), planeMaterial);
-    planeBody = new THREE.Mesh(new THREE.CubeGeometry(8, 3, 40), planeMaterial);
-    planeBody.position.z = 10;
-    planeBody.position.y = -1.5;
-    // plane.rotation.y = 1.57;
-    plane.rotation.x = 0.2;
+    planeMaterial = new THREE.MeshLambertMaterial({
+        color: 0xEFEFEF,
+        transparent: true
+    });
 
-    plane.position.set(0,-2,-50)
+    // plane = new THREE.Mesh(new THREE.CubeGeometry(40, 3, 3), planeMaterial);
+    planeBody = new THREE.Mesh(new THREE.CubeGeometry(8, 3, 40), planeMaterial);
+
+    plane = new THREE.Object3D();
+
+    var planeLoader = new THREE.ObjectLoader();
+    planeLoader.load('/models/plane_main.js', function(mesh) {
+        var scale = 0.2;
+        mesh.scale.set(scale,scale,scale);
+        mesh.position.y = 0;
+
+        movementScaleX = 0.2;
+        movementScaleY = 0.2;
+
+        var propeller = mesh.children[0].children[0];
+
+        plane.position.z = -10;
+        plane.rotation.x = 0.2;
+        plane.add(mesh);
+
+        planeControls.rotatePropeller(propeller);
+
+    })
+
+    // var planeLoader = new THREE.ObjectLoader();
+    // planeLoader.load('/models/plane_main.js', function(mesh) {
+    //     var scale = 0.2;
+    //     mesh.scale.set(scale,scale,scale);
+    //     mesh.position.y = 0;
+
+    //     movementScaleX = 0.2;
+    //     movementScaleY = 0.2;
+
+    //     plane.position.z = -10;
+    //     plane.rotation.x = 0.2;
+    //     plane.add(mesh);
+
+    // })
 
     camera.add(plane);
-    plane.add(planeBody)
+
+    // planeBody.position.z = 10;
+    // planeBody.position.y = -1.5;
+    // // plane.rotation.y = 1.57;
+    // plane.rotation.x = 0.2;
+
+    // plane.position.set(0, -2, -50)
+
+
+    // plane.add(planeBody)
 
     var winW = window.innerWidth;
-  	var winH = window.innerHeight;
+    var winH = window.innerHeight;
 
-    document.addEventListener( 'mousemove', function(){
+    document.addEventListener('mousemove', function() {
 
-    	if(!controls.freeze && !controls.leapControl){
-	  		var x = (event.pageX/winW - 0.5);
-	  		var y = (event.pageY/winH - 0.5);
+        if (!controls.freeze && !controls.leapControl) {
+            var x = (event.pageX / winW - 0.5);
+            var y = (event.pageY / winH - 0.5);
 
             planeControls.setWithMouse(x, y)
 
-    	}
-    } );
+        }
+    });
 
-    setTimeout(function(){
-		game.pause();
-		game.pause();
-	}, 1000)
+    setTimeout(function() {
+        game.pause();
+        game.pause();
+    }, 1000)
 
 }
 
@@ -84,9 +130,9 @@ function animate() {
 
     hitTest();
 
-    if(!controls.freeze){
-    	// camera.position.y -= 0.3;
-	}
+    if (!controls.freeze) {
+        // camera.position.y -= 0.3;
+    }
     var time = performance.now() / 1000;
 
     controls.update(time - lastTime);
@@ -101,7 +147,7 @@ function animate() {
 function hitTest() {
     for (var i = 0; i < rings.length; i++) {
 
-    	var planePos = new THREE.Vector3();
+        var planePos = new THREE.Vector3();
         planePos.setFromMatrixPosition(plane.matrixWorld);
 
         // var camPos = new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z);
@@ -130,5 +176,3 @@ function hitTest() {
         dT = null;
     };
 }
-
-

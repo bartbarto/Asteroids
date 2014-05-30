@@ -90,10 +90,10 @@ var planeControls = {
     setWithMouse: function(x, y) {
 
         plane.rotation.y = -x;
-        plane.rotation.z = -1.5 * x;
-        plane.rotation.x = -1.2 * y;
+        plane.rotation.z = (-1.5 * x);
+        plane.rotation.x = (-1.2 * y);
 
-        plane.position.y = -2 - 50 * y;
+        plane.position.y = (-2 - 50 * y) * movementScaleY;
 
         if (y < 0) {
             planeMaterial.opacity = 0.5;
@@ -103,8 +103,14 @@ var planeControls = {
             planeMaterial.opacity = 1;
         }
     },
-    setWithLeap: function(rotX, rotZ){
+    setWithLeap: function(rotX, rotZ) {
         plane.rotation.x = rotX * 0.5;
-        plane.rotation.z = rotZ ;
+        plane.rotation.z = rotZ;
+    },
+    rotatePropeller: function(propeller) {
+        propeller.rotation.x += 0.6;
+        setTimeout(function() {
+            planeControls.rotatePropeller(propeller)
+        }, 20)
     }
 }
