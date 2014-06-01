@@ -17,7 +17,7 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 	this.lookSpeed = 0.005;
 
 	this.lookVertical = true;
-	this.autoForward = false;
+	this.autoForward = true;
 	// this.invertVertical = false;
 
 	this.activeLook = true;
@@ -157,22 +157,22 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 
 			switch ( event.keyCode ) {
 
-				case 38: /*up*/
-				case 87: /*W*/ this.moveForward = true; break;
+				// case 38: /*up*/
+				// case 87: /*W*/ this.moveForward = true; break;
 
-				case 37: /*left*/
-				case 65: /*A*/ this.moveLeft = true; break;
+				// case 37: /*left*/
+				// case 65: /*A*/ this.moveLeft = true; break;
 
-				case 40: /*down*/
-				case 83: /*S*/ this.moveBackward = true; break;
+				// case 40: /*down*/
+				// case 83: /*S*/ this.moveBackward = true; break;
 
-				case 39: /*right*/
-				case 68: /*D*/ this.moveRight = true; break;
+				// case 39: /*right*/
+				// case 68: /*D*/ this.moveRight = true; break;
 
-				case 82: /*R*/ this.moveUp = true; break;
-				case 70: /*F*/ this.moveDown = true; break;
+				// case 82: /*R*/ this.moveUp = true; break;
+				// case 70: /*F*/ this.moveDown = true; break;
 
-				case 81: /*Q*/ this.freeze = !this.freeze; break;
+				// case 81: /*Q*/ this.freeze = !this.freeze; break;
 
 			}
 

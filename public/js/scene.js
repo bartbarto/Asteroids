@@ -5,12 +5,33 @@ var sceneMaker = {
         light.position.set(0.75, 1, 0.25);
         scene.add(light);
 
+        // var sunlight = new THREE.DirectionalLight();
+        // sunlight.position.set(-2000, 2500, -2500);
+        // sunlight.intensity = 0.5;
+        // sunlight.castShadow = true;
+        // sunlight.shadowDarkness = 0.9;
+        // sunlight.shadowMapWidth = sunlight.shadowMapHeight = 2048;
+        // sunlight.shadowCameraNear = 250;
+        // sunlight.shadowCameraFar = 600;
+        // sunlight.shadowCameraLeft = -200;
+        // sunlight.shadowCameraRight = 200;
+        // sunlight.shadowCameraTop = 200;
+        // sunlight.shadowCameraBottom = -200;
+
+        // scene.add(sunlight);
+
+
         var l = new THREE.ObjectLoader();
         l.load('js/island.js', function(mesh) {
             mesh.scale.x = mesh.scale.y = mesh.scale.z = 100;
             mesh.position.x += 400;
             mesh.rotation.y = 1.57;
             scene.add(mesh);
+
+            game.pause()
+            setTimeout(function(){
+                game.pause()
+            },100)
         })
         //
         //

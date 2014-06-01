@@ -1,3 +1,22 @@
+/*
+
+TODO:
+
+Muntjes/ sterretjes tussen de ringen.
+(pijl naar volgende ring?)
+Levels
+preloader
+controls kiezen
+model kiezen
+
+meer levels
+landschappen
+
+
+
+ */
+
+
 var scene, camera, renderer;
 var light, controls;
 var lastTime;
@@ -11,15 +30,75 @@ var level = 1;
 var movementScaleX = 1;
 var movementScaleY = 1;
 
-var plane, planeMaterial;
+var plane, planeMaterials = [];
 
-init();
-animate();
+var queue;
+
+$(function() {
+    queue = new createjs.LoadQueue();
+    queue.installPlugin(createjs.Sound);
+    queue.on("complete", handleComplete, this);
+    queue.on("progress", handleProgress, this);
+    queue.loadManifest([
+        // {id: "physijs_worker",src: "/js/libs/physijs_worker.js"},
+        {
+            id: "landscape",
+            src: "/js/island.js"
+        },{
+            id: "F22",
+            src: "/models/F22.js"
+        }, {
+            id: "falcon",
+            src: "/models/falcon.js"
+        }, {
+            id: "main",
+            src: "/models/plane_main.js"
+        }, {
+            id: "toy",
+            src: "/models/toy_plane.js"
+        }, {
+            id: "UFO",
+            src: "/models/UFO.js"
+        }, {
+            id: "falcon_sound",
+            src: "/sounds/falcon-cockpit-loop01.wav"
+        }, {
+            id: "jet_sound",
+            src: "/sounds/jet.wav"
+        }, {
+            id: "propeller_sound",
+            src: "/sounds/prop3.wav"
+        }, {
+            id: "UFO_sound",
+            src: "/sounds/ufoFlying.mp3"
+        }, {
+            id: "Space Oddity",
+            src: "/sounds/space_oddity.mp3"
+        }
+    ]);
+
+
+})
+
+function handleComplete() {
+    $('.overlay').delay(10).fadeOut('slow');
+    init();
+    animate();
+
+    // createjs.Sound.play("music", {loop:-1});
+}
+
+function handleProgress(e) {
+    var percentLoaded = Math.round(e.loaded * 100);
+    $('.percentLoaded').html(percentLoaded + ' %');
+    $('.progress').css('width', percentLoaded + '%')
+}
+
 
 function init() {
 
     renderer = new THREE.WebGLRenderer({
-        antialias: false,
+        antialias: true,
         alpha: false
     });
     renderer.setClearColor(0xd8e7ff);
@@ -45,62 +124,14 @@ function init() {
 
     lastTime = performance.now();
 
-
-    planeMaterial = new THREE.MeshLambertMaterial({
-        color: 0xEFEFEF,
-        transparent: true
-    });
-
-    // plane = new THREE.Mesh(new THREE.CubeGeometry(40, 3, 3), planeMaterial);
-    planeBody = new THREE.Mesh(new THREE.CubeGeometry(8, 3, 40), planeMaterial);
-
+    //object to put the plane in
     plane = new THREE.Object3D();
 
-    var planeLoader = new THREE.ObjectLoader();
-    planeLoader.load('/models/plane_main.js', function(mesh) {
-        var scale = 0.2;
-        mesh.scale.set(scale,scale,scale);
-        mesh.position.y = 0;
-
-        movementScaleX = 0.2;
-        movementScaleY = 0.2;
-
-        var propeller = mesh.children[0].children[0];
-
-        plane.position.z = -10;
-        plane.rotation.x = 0.2;
-        plane.add(mesh);
-
-        planeControls.rotatePropeller(propeller);
-
-    })
-
-    // var planeLoader = new THREE.ObjectLoader();
-    // planeLoader.load('/models/plane_main.js', function(mesh) {
-    //     var scale = 0.2;
-    //     mesh.scale.set(scale,scale,scale);
-    //     mesh.position.y = 0;
-
-    //     movementScaleX = 0.2;
-    //     movementScaleY = 0.2;
-
-    //     plane.position.z = -10;
-    //     plane.rotation.x = 0.2;
-    //     plane.add(mesh);
-
-    // })
+    //To load the planes
+    planeMaker.loadPlane('main');
 
     camera.add(plane);
 
-    // planeBody.position.z = 10;
-    // planeBody.position.y = -1.5;
-    // // plane.rotation.y = 1.57;
-    // plane.rotation.x = 0.2;
-
-    // plane.position.set(0, -2, -50)
-
-
-    // plane.add(planeBody)
 
     var winW = window.innerWidth;
     var winH = window.innerHeight;
@@ -118,8 +149,8 @@ function init() {
 
     setTimeout(function() {
         game.pause();
-        game.pause();
-    }, 1000)
+        // game.pause();
+    }, 100)
 
 }
 
