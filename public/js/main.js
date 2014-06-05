@@ -15,9 +15,13 @@ meer levels
 meer wolkjes
 meer landschappen
 
+Minimap (rechtsonder?)
 
+vuurwerk
 
  */
+var mapBuilding = 0;
+
 
 
 var scene, camera, renderer;
@@ -111,7 +115,7 @@ function handleProgress(e) {
     $('.progress').css('width', percentLoaded + '%')
 }
 
-
+var overCam;
 function init() {
 
     renderer = new THREE.WebGLRenderer({
@@ -126,12 +130,26 @@ function init() {
     camera.position.y = 100;
     // camera.position.z = -500;
     // camera.lookAt(0,0,0)
-
+    //
+    //
 
 
     scene = new THREE.Scene();
     scene.fog = new THREE.FogExp2(0xd0e0f0, 0.00025);
     scene.add(camera);
+
+    if(mapBuilding){
+        // debug
+        overCam = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 1, 30000);
+        overCam.position.y = 3300;
+        overCam.position.z = 150;
+        overCam.position.x = 190;
+        overCam.rotation.x = -1.57;
+
+        $('.ticket-holder').hide();
+        // end debug
+        scene.add(overCam);
+    }
 
 
     gameControls.init();
@@ -187,7 +205,12 @@ function animate() {
     var time = performance.now() / 1000;
 
     controls.update(time - lastTime);
-    renderer.render(scene, camera);
+
+    if(!mapBuilding){
+        renderer.render(scene, camera);
+    }else{
+        renderer.render(scene, overCam);
+    }
 
     lastTime = time;
 
@@ -272,7 +295,7 @@ function hitTest() {
         var starPos = new THREE.Vector3(stars[i].position.x, stars[i].position.y, stars[i].position.z);
         var dT = planePos.distanceTo(starPos);
         // console.log('distance -> ', dT);
-        if (dT < 4 && stars[i].hit != true) {
+        if (dT < 7 && stars[i].hit != true) {
             stars[i].material = new THREE.MeshBasicMaterial({
                 color: 0x00FF00,
                 transparent: true,

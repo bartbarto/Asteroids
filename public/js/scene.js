@@ -70,6 +70,8 @@ var sceneMaker = {
 
         this.makeRings();
     },
+    ringTexture: THREE.ImageUtils.loadTexture("/img/ring_normal.png"),
+    finalTexture: THREE.ImageUtils.loadTexture("/img/ring_final.png"),
     makeRings: function() {
 
         game.animatedRings = [];
@@ -79,11 +81,11 @@ var sceneMaker = {
 
         // TorusGeomtery -> ( radius, tube, segmentsR, segmentsT, arc )
         var ringGeo = new THREE.TorusGeometry(20, 3, 4, 8);
-        var texture = THREE.ImageUtils.loadTexture("/img/ring_normal.png");
+        var texture = this.ringTexture;
         texture.wrapS = THREE.RepeatWrapping;
         texture.repeat.set(4, 1);
 
-        var finalTexture = THREE.ImageUtils.loadTexture("/img/ring_final.png");
+        var finalTexture = this.finalTexture;
         finalTexture.wrapS = THREE.RepeatWrapping;
         finalTexture.repeat.set(4, 1);
 
@@ -132,6 +134,7 @@ var sceneMaker = {
         };
         this.removeStars();
     },
+    starTexture: THREE.ImageUtils.loadTexture("/img/star_texture.png"),
     makeStars: function() {
         // var starShape = new THREE.Mesh(
         //     new THREE.SphereGeometry(4, 5, 5),
@@ -170,7 +173,7 @@ var sceneMaker = {
 
         //turning it to the 3rd dimension
         var starGeometry = new THREE.ExtrudeGeometry(starShape, extrusionSettings);
-        var starTexture = THREE.ImageUtils.loadTexture("/img/star_texture.png");
+        var starTexture = this.starTexture;
         starTexture.wrapS = THREE.RepeatWrapping;
         starTexture.wrapT = THREE.RepeatWrapping;
         starTexture.repeat.set(0, 0);

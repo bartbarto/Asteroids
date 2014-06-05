@@ -24,6 +24,11 @@ var game = {
             loop: -1,
             volume: 0.9
         });
+        camPos = levels[level - 1].cameraStart;
+        camera.position.x = camPos.x;
+        camera.position.y = camPos.y;
+        camera.position.z = camPos.z;
+        camera.rotation.y = 0;
     },
     pause: function() {
 
@@ -126,7 +131,7 @@ var game = {
         game.message += '<br>Press space to continue';
         $('.pause-message').html(game.message);
     },
-    updateScore: function(){
+    updateScore: function() {
         var ringString = ringsHit + ' / ' + rings.length;
         var starString = starsHit + ' / ' + stars.length;
         var levelString = 'Level ' + level;
@@ -153,7 +158,7 @@ var gameControls = {
                     // controls.autoForward = !controls.autoForward;
                     if (game.levelScreenActive && !game.paused) {
                         game.nextLevel();
-                    }else if(game.levelScreenActive && game.paused){
+                    } else if (game.levelScreenActive && game.paused) {
                         $('.pause').fadeOut();
                         game.paused = false;
                     } else {
@@ -166,7 +171,7 @@ var gameControls = {
                 case 27: //esc
                     if (game.levelScreenActive && !game.paused) {
                         game.nextLevel();
-                    }else if(game.levelScreenActive && game.paused){
+                    } else if (game.levelScreenActive && game.paused) {
                         $('.pause').fadeOut();
                         game.paused = false;
                     } else {
