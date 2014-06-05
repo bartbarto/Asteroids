@@ -51,6 +51,9 @@ var planeMaker = {
 
             game.sound = createjs.Sound.play("propeller_sound", {loop:-1});
             game.sound.pause();
+
+            game.message = 'You have now selected the normal Propeller plane';
+            game.updatePauseMessage();
         })
     },
     loadUFO: function() {
@@ -82,6 +85,9 @@ var planeMaker = {
 
             game.sound = createjs.Sound.play("UFO_sound", {loop:-1});
             game.sound.pause();
+
+            game.message = 'You have now selected the UFO';
+            game.updatePauseMessage();
         })
 
     },
@@ -123,6 +129,9 @@ var planeMaker = {
 
             game.sound = createjs.Sound.play("jet_sound", {loop:-1});
             game.sound.pause();
+
+            game.message = 'You have now selected F22 Fighter Jet';
+            game.updatePauseMessage();
 	    })
     },
     loadFalcon: function() {
@@ -154,6 +163,9 @@ var planeMaker = {
 
             game.sound = createjs.Sound.play("falcon_sound", {loop:-1});
             game.sound.pause();
+
+            game.message = '<span class="star-wars">You have now selected the Millenium Falcon, May the force be with you!</span>';
+            game.updatePauseMessage();
 	    })
     },
     loadToy: function() {
@@ -188,6 +200,9 @@ var planeMaker = {
             game.sound = createjs.Sound.play("propeller_sound", {loop:-1});
             game.sound.pause();
 
+            game.message = 'You have now selected the Toy Plane';
+            game.updatePauseMessage();
+
 	    })
     },
     switch: function(parameter){
@@ -198,9 +213,9 @@ var planeMaker = {
     	this.loadPlane(parameter);
     	camera.add(plane);
 
-        if(!game.paused){
-            game.pause();
-        }
+        // if(!game.paused){
+        //     game.pause();
+        // }
     },
     autoSwitch: function(){
 
@@ -224,6 +239,8 @@ var planeMaker = {
     			this.switch('main');
     			break;
     	}
+
+
 
         // controls.freeze = false;
         // setTimeout(function(){

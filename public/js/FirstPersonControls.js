@@ -33,6 +33,8 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 
 	this.autoSpeedFactor = 0.0;
 
+	this.movementScale = 1.4;
+
 	this.mouseX = 0;
 	this.mouseY = 0;
 
@@ -130,13 +132,13 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 
 		if ( this.domElement === document && !this.leapControl) {
 
-			this.mouseX = event.pageX - this.viewHalfX;
-			this.mouseY = event.pageY - this.viewHalfY;
+			this.mouseX = (event.pageX - this.viewHalfX) * this.movementScale;
+			this.mouseY = (event.pageY - this.viewHalfY) * this.movementScale;
 
 		} else if(!this.leapControl){
 
-			this.mouseX = event.pageX - this.domElement.offsetLeft - this.viewHalfX;
-			this.mouseY = event.pageY - this.domElement.offsetTop - this.viewHalfY;
+			this.mouseX = (event.pageX - this.domElement.offsetLeft - this.viewHalfX) * this.movementScale;
+			this.mouseY = (event.pageY - this.domElement.offsetTop - this.viewHalfY) * this.movementScale;
 
 		}
 

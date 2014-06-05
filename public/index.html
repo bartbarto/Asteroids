@@ -1,84 +1,67 @@
-<!-- saved from url=(0051)http://www.mrdoob.com/lab/javascript/webgl/city/01/ -->
 <html>
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <title>Fly</title>
-    <style>
-    body {
-        background-color: #d8e7ff;
-        font-family: bebas-neue, sans-serif;
-    	-webkit-font-smoothing: antialiased;
-        cursor: url(cursor.png), auto;
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-    }
-    canvas{
-    	position: absolute;
-    }
-    .info{
-    	font-family: monospace;
-    	position: absolute;
-    	z-index: 100;
-    }
-    .overlay {
-	    position: absolute;
-	    z-index: 1000;
-	    width: 100%;
-	    height: 100%;
-	    background: #EFEFEF;
-	    text-align: center;
-	}
-	.percentLoaded {
-	    position: absolute;
-	    top: 20%;
-	    left: 0;
-	    z-index: 1001;
-	    width: 100%;
-	    text-align: center;
-	    font-size: 8em;
-	}
-	.progress {
-	    position: absolute;
-	    top: 0;
-	    left: 0;
-	    z-index: 1000;
-	    width: 0%;
-	    height: 100%;
-	    background: #6588D6;
-	}
-	.pause{
-	    position: absolute;
-	    z-index: 10000;
-	    display: none;
-	    padding-top:15%;
-	    width: 100%;
-	    height: 100%;
-	    background: rgba(0,0,0,0.8);
-	    color: white;
-	    text-align: center;
-	    letter-spacing: 10px;
-	    font-weight: 800;
-	    font-size: 10rem;
-	    font-family: Impact, Haettenschweiler, "Franklin Gothic Bold", Charcoal, "Helvetica Inserat", "Bitstream Vera Sans Bold", "Arial Black", sans serif;
-	    -webkit-font-smoothing: antialiased;
-	}
-    </style>
-    <!-- <script src="//use.edgefonts.net/bebas-neue.js"></script> -->
+    <link rel="stylesheet" href="css/style.css">
+    <script src="//use.edgefonts.net/bebas-neue.js"></script>
 </head>
 
 <body>
     <canvas></canvas>
-    <div style="position: absolute; left: 0px; top: 15px; width: 100%; color: rgba(0, 0, 64, 0.498039); text-align: center;" class="info">Press Space to Start / pause<br>Press A to switch planes</div>
+    <div style="position: absolute; left: 0px; top: 15px; width: 100%; color: rgba(0, 0, 64, 0.498039); text-align: center;" class="info">Press Space to Start / pause
+        <br>Press A to switch planes</div>
 
     <div class="overlay">
         <div class="percentLoaded">0%</div>
         <div class="progress"></div>
     </div>
 
-     <div class="pause">
+    <div class="pause">
         ll
+        <div class="pause-message"></div>
+    </div>
+
+    <div class="ticket-holder">
+        <div class="info-score">
+            <div class="title">Fly.kerm.is</div>
+            <div class="subtitle">Level 1</div>
+            <div class="score-card left">
+				Stars<br>
+				<span class="stars score">0/0</span>
+            </div>
+            <div class="score-card right">
+				Rings<br>
+				<span class="rings score">0/0</span>
+            </div>
+
+            <span class="next-level-button">Press space to continue</span>
+        </div>
+    </div>
+
+    <div class="gamenu">
+        <h1 class="title">Pick your plane</h1>
+
+        <div class="plane main" data-plane="main">
+            <img src="img/planes/plane_main.png" alt="plane">
+            <h6>Propellor Plane</h6>
+        </div>
+        <div class="plane toy" data-plane="toy">
+            <img src="img/planes/toy_plane.png" alt="plane">
+            <h6>Toy Plane</h6>
+        </div>
+        <div class="plane F22" data-plane="F22">
+            <img src="img/planes/F22.png" alt="plane">
+            <h6>F22 Fighter Jet</h6>
+        </div>
+        <div class="plane UFO" data-plane="UFO">
+            <img src="img/planes/UFO.png" alt="plane">
+            <h6>UFO</h6>
+        </div>
+        <div class="plane falcon" data-plane="falcon">
+            <img src="img/planes/falcon.png" alt="plane">
+            <h6>Millenium Falcon</h6>
+        </div>
     </div>
 
     <!-- Libraries -->
@@ -95,13 +78,15 @@
 
     <!-- Edited Libraries & controllers-->
     <script src="js/FirstPersonControls.js"></script>
-    <script src="js/ImprovedNoise.js"></script> <!-- voor evt landscape gneeration -->
+    <script src="js/ImprovedNoise.js"></script>
+    <!-- voor evt landscape gneeration -->
     <script src="js/leap.js"></script>
 
     <!-- Game stuff -->
     <script src="js/levels.js"></script>
     <script src="js/scene.js"></script>
     <script src="js/game.js"></script>
+    <script src="js/UI.js"></script>
     <script src="js/planeLoader.js"></script>
 
     <script src="js/main.js"></script>

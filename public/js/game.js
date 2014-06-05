@@ -4,18 +4,26 @@ var game = {
     music: null,
     volume: 0,
     started: false,
+    message: '',
+    animatedRings: [],
+    levelScreenActive: false,
     win: function() {
-        console.log('uitgespeeld, je hebt door ' + ringsHit + ' van de ' + rings.length + ' ringen gevlogen');
-        this.endOfLevel();
+        // console.log('uitgespeeld, je hebt door ' + ringsHit + ' van de ' + rings.length + ' ringen gevlogen');
+        // console.log('Je hebt ' + starsHit + ' van de ' + stars.length + ' sterren gevangen');
+        // this.endOfLevel();
     },
 
     over: function() {
         controls.freeze = true;
     },
-    start: function(){
+    start: function() {
         game.started = true;
+        $('.info-score').addClass('active');
         game.volume = 0.5;
-        game.music = createjs.Sound.play("Space Oddity", {loop:-1, volume: 0.9});
+        game.music = createjs.Sound.play("Space Oddity", {
+            loop: -1,
+            volume: 0.9
+        });
     },
     pause: function() {
 
@@ -26,55 +34,106 @@ var game = {
             game.sound.pause();
 
             // if(game.music){
-            try{
+            try {
                 game.music.pause();
-            }catch(e){}
+            } catch (e) {}
             // }
 
-            if(game.started){
+            if (game.started) {
                 $('.pause').fadeIn(100);
             }
         } else {
+            $('.pause').hide();
+
             this.paused = false;
             controls.freeze = false;
             game.sound.volume = game.volume;
             game.sound.resume();
 
-            if(game.music){
+            if (game.music) {
                 game.music.resume();
             }
 
-            $('.pause').fadeOut(10);
+
+
+            game.message = '';
+            game.updatePauseMessage();
         }
     },
     nextLevel: function() {
-        sceneMaker.removeRings();
-        rings = [];
+        $('.big').css({
+            right: '500%'
+        });
+        //only do this after the big ticket is gone from the screen
+        setTimeout(function() {
+            $('.big').remove();
+            $('.next-level-button').hide();
+            $('.info-score').addClass('active');
+            game.levelScreenActive = false;
+            sceneMaker.removeRings();
+            rings = [];
+            stars = [];
 
-        level++;
+            level++;
 
-        sceneMaker.makeRings();
+            sceneMaker.makeRings();
 
-        camPos = levels[level - 1].cameraStart;
-        camera.position.x = camPos.x;
-        camera.position.y = camPos.y;
-        camera.position.z = camPos.z;
-        camera.rotation.y = 0;
+            camPos = levels[level - 1].cameraStart;
+            camera.position.x = camPos.x;
+            camera.position.y = camPos.y;
+            camera.position.z = camPos.z;
+            camera.rotation.y = 0;
 
-        controls.lat = 0;
-        controls.lon = 0;
-        controls.theta =0;
-        controls.phi =0;
+            controls.lat = 0;
+            controls.lon = 0;
+            controls.theta = 0;
+            controls.phi = 0;
 
-        ringsHit = 0;
+            ringsHit = 0;
+            starsHit = 0;
+
+            controls.freeze = false;
+            game.sound.resume();
+        }, 500);
     },
     endOfLevel: function() {
+
+        var newTicket = $('.info-score').clone();
+        newTicket.removeClass('active');
+        newTicket.removeClass('ripping');
+
         levelEnded = true;
+        controls.freeze = true;
+        $('.info-score').addClass('ripping');
+        setTimeout(function() {
+            $('.info-score').addClass('big');
+            $('.ticket-holder').append(newTicket)
+        }, 500)
+
+        setTimeout(function() {
+            $('.next-level-button').fadeIn();
+        }, 1500)
+
+        game.levelScreenActive = true;
+        game.sound.pause();
         // controls.freeze();
 
-        this.nextLevel();
+        // this.nextLevel();
         //UI.message = 'uitgespeeld, je hebt door ' + ringsHit + ' van de ' + rings.length + ' ringen gevlogen';
         //UI.showDialog();
+    },
+    updatePauseMessage: function() {
+        game.message += '<br>Press space to continue';
+        $('.pause-message').html(game.message);
+    },
+    updateScore: function(){
+        var ringString = ringsHit + ' / ' + rings.length;
+        var starString = starsHit + ' / ' + stars.length;
+        var levelString = 'Level ' + level;
+
+        $('.score-card .rings').html(ringString);
+        $('.score-card .stars').html(starString);
+        $('.info-score .subtitle').html(levelString);
     }
 }
 
@@ -88,22 +147,36 @@ var gameControls = {
         // controls.autoForward = true;
 
         document.addEventListener('keydown', function(e) {
-            console.log(e.keyCode);
+            // console.log(e.keyCode);
             switch (e.keyCode) {
                 case 32: //space
                     // controls.autoForward = !controls.autoForward;
-                    if(!game.started){
-                        game.start();
+                    if (game.levelScreenActive && !game.paused) {
+                        game.nextLevel();
+                    }else if(game.levelScreenActive && game.paused){
+                        $('.pause').fadeOut();
+                        game.paused = false;
+                    } else {
+                        if (!game.started) {
+                            game.start();
+                        }
+                        game.pause();
                     }
-                    game.pause();
                     break;
                 case 27: //esc
-                    game.pause();
+                    if (game.levelScreenActive && !game.paused) {
+                        game.nextLevel();
+                    }else if(game.levelScreenActive && game.paused){
+                        $('.pause').fadeOut();
+                        game.paused = false;
+                    } else {
+                        game.pause();
+                    }
                     return false;
                     break;
                 case 65: //a
-                    game.pause();
-                    planeMaker.autoSwitch();
+                    // game.pause();
+                    // planeMaker.autoSwitch();
                     return false;
                     break;
             }
@@ -138,10 +211,10 @@ var planeControls = {
         plane.rotation.x = rotX * 0.5;
         plane.rotation.z = rotZ;
     },
-    rotatePropeller: function(propeller, axis){
+    rotatePropeller: function(propeller, axis) {
 
-        if(!game.paused){
-            switch(axis){
+        if (!controls.freeze) {
+            switch (axis) {
                 case 'x':
                     propeller.rotation.x += 1;
                     break;
@@ -160,7 +233,7 @@ var planeControls = {
         }, 20)
     },
     rotatePlane: function(mesh) {
-        if(!game.paused){
+        if (!controls.freeze) {
             mesh.rotation.y += 0.03;
         }
 

@@ -5,12 +5,15 @@ TODO:
 Muntjes/ sterretjes tussen de ringen.
 (pijl naar volgende ring?)
 Levels
-preloader
+preloader ✓
 controls kiezen
 model kiezen
 
+collisions
+
 meer levels
-landschappen
+meer wolkjes
+meer landschappen
 
 
 
@@ -20,15 +23,17 @@ landschappen
 var scene, camera, renderer;
 var light, controls;
 var lastTime;
-var rings = [];
+var rings = [],
+    stars = [];
 var ringsHit = 0;
+var starsHit = 0;
 var levelEnded = false;
 var gameOver = false;
 
 var level = 1;
 
-var movementScaleX = 1;
-var movementScaleY = 1;
+var movementScaleX = 1.5;
+var movementScaleY = 1.5;
 
 var plane, planeMaterials = [];
 
@@ -45,6 +50,15 @@ $(function() {
             id: "landscape",
             src: "/js/island.js"
         },{
+            id: "texture_1",
+            src: "/img/ring_normal.png"
+        },{
+            id: "texture_2",
+            src: "/img/ring_final.png"
+        },{
+            id: "texture_3",
+            src: "/img/star_texture.png"
+        }, {
             id: "F22",
             src: "/models/F22.js"
         }, {
@@ -71,6 +85,9 @@ $(function() {
         }, {
             id: "UFO_sound",
             src: "/sounds/ufoFlying.mp3"
+        }, {
+            id: "ping",
+            src: "/sounds/ping.mp3"
         }, {
             id: "Space Oddity",
             src: "/sounds/space_oddity.mp3"
@@ -118,6 +135,7 @@ function init() {
 
 
     gameControls.init();
+    // controls.movementSpeed = 1.2;
     controls.leapControl = false;
 
     sceneMaker.build();
@@ -163,6 +181,8 @@ function animate() {
 
     if (!controls.freeze) {
         // camera.position.y -= 0.3;
+        animateRings();
+        animateStars();
     }
     var time = performance.now() / 1000;
 
@@ -171,15 +191,53 @@ function animate() {
 
     lastTime = time;
 
+
+}
+
+function animateStars(){
+    for (var i = 0; i < stars.length; i++) {
+        stars[i].rotation.y += (Math.random()/10)
+    };
+}
+
+function animateRings() {
+    for (var i = 0; i < game.animatedRings.length; i++) {
+
+        if (game.animatedRings[i].direction != 'down' && game.animatedRings[i].position.y < game.animatedRings[i].originalPosition + 20) {
+
+            game.animatedRings[i].position.y += 0.2;
+
+
+        }
+        if (game.animatedRings[i].position.y >= game.animatedRings[i].originalPosition + 20) {
+
+            game.animatedRings[i].direction = 'down';
+
+        }
+        if (game.animatedRings[i].direction == 'down') {
+            game.animatedRings[i].position.y -= 0.2;
+
+        }
+        if (game.animatedRings[i].position.y <= game.animatedRings[i].originalPosition - 20) {
+
+            game.animatedRings[i].direction = 'up';
+
+        }
+        // console.log(game.animatedRings[i].position.y);
+    };
 }
 
 
 
 function hitTest() {
-    for (var i = 0; i < rings.length; i++) {
+    var planePos = new THREE.Vector3();
 
-        var planePos = new THREE.Vector3();
-        planePos.setFromMatrixPosition(plane.matrixWorld);
+    if(plane.children[0]){
+        planePos.setFromMatrixPosition(plane.children[0].matrixWorld) ;
+    }
+
+    //check for the rings
+    for (var i = 0; i < rings.length; i++) {
 
         // var camPos = new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z);
         var ringPos = new THREE.Vector3(rings[i].position.x, rings[i].position.y, rings[i].position.z);
@@ -194,16 +252,48 @@ function hitTest() {
             rings[i].hit = true;
             ringsHit++;
             if (rings[i].final) {
-                game.win();
-            }
-        }
+                setTimeout(function(){
+                    game.endOfLevel();
+                }, 800)
 
-        if (planePos.y < 5) {
-            game.over();
+            }
+
+            game.updateScore();
         }
 
         //clearing of the values
         ringPos = null;
         dT = null;
     };
+
+    for (var i = 0; i < stars.length; i++) {
+
+        // var camPos = new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z);
+        var starPos = new THREE.Vector3(stars[i].position.x, stars[i].position.y, stars[i].position.z);
+        var dT = planePos.distanceTo(starPos);
+        // console.log('distance -> ', dT);
+        if (dT < 4 && stars[i].hit != true) {
+            stars[i].material = new THREE.MeshBasicMaterial({
+                color: 0x00FF00,
+                transparent: true,
+                opacity: 0
+            });
+            stars[i].hit = true;
+            starsHit++;
+            console.log('starHit');
+            createjs.Sound.play("ping");
+
+        }
+
+        //clearing of the values
+        starPos = null;
+        dT = null;
+
+        game.updateScore();
+    };
+
+    if (planePos.y < 5) {
+        game.over();
+    }
+
 }
