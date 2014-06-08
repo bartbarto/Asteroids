@@ -2,22 +2,29 @@
 
 TODO:
 
-Muntjes/ sterretjes tussen de ringen.
+Muntjes/ sterretjes tussen de ringen. ✓
 (pijl naar volgende ring?)
-Levels
+Levels ✓
 preloader ✓
-controls kiezen
-model kiezen
+controls kiezen ✓
+model kiezen ✓
 
-collisions
+collisions ✓
 
-meer levels
-meer wolkjes
-meer landschappen
+meer levels ✓
+meer wolkjes ✓
+meer landschappen ✓
 
-Minimap (rechtsonder?)
+Minimap ✓
 
 vuurwerk
+
+countdown voor begin level
+
+Animatie als je door ring vliegt ipv op groen te zetten
+
+cinematic screen ratio (21:9) -> op C drukken
+Muziek toggle -> op M drukken
 
  */
 var mapBuilding = 0;
@@ -39,11 +46,26 @@ var level = 1;
 var movementScaleX = 1.5;
 var movementScaleY = 1.5;
 
-var plane, planeMaterials = [];
+var planePicked, plane, planeMaterials = [];
+
+var collidableMeshList = [];
+
+var planeMeshList = [];
 
 var queue;
 
 $(function() {
+    //redirect if on mobile
+    if (Modernizr.touch) {
+        // var isMobile = window.matchMedia("only screen and (max-width: 760px)");
+
+        // if (isMobile.matches) {
+        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+            window.location.replace("http://fly.kerm.is/connect");
+            alert();
+        }
+        // }
+    }
     queue = new createjs.LoadQueue();
     queue.installPlugin(createjs.Sound);
     queue.on("complete", handleComplete, this);
@@ -52,14 +74,17 @@ $(function() {
         // {id: "physijs_worker",src: "/js/libs/physijs_worker.js"},
         {
             id: "landscape",
-            src: "/js/island.js"
-        },{
+            src: "/models/islands.js"
+        }, {
+            id: "cloud",
+            src: "/models/cloud.js"
+        }, {
             id: "texture_1",
             src: "/img/ring_normal.png"
-        },{
+        }, {
             id: "texture_2",
             src: "/img/ring_final.png"
-        },{
+        }, {
             id: "texture_3",
             src: "/img/star_texture.png"
         }, {
@@ -93,6 +118,9 @@ $(function() {
             id: "ping",
             src: "/sounds/ping.mp3"
         }, {
+            id: "boom",
+            src: "/sounds/Explosion.mp3"
+        }, {
             id: "Space Oddity",
             src: "/sounds/space_oddity.mp3"
         }
@@ -102,7 +130,10 @@ $(function() {
 })
 
 function handleComplete() {
-    $('.overlay').delay(10).fadeOut('slow');
+    // $('.overlay').delay(10).fadeOut('slow');
+
+    $('.overlay').delay(10).fadeOut('normal')
+
     init();
     animate();
 
@@ -116,17 +147,22 @@ function handleProgress(e) {
 }
 
 var overCam;
+
 function init() {
 
     renderer = new THREE.WebGLRenderer({
         antialias: true,
         alpha: false
     });
+
     renderer.setClearColor(0xd8e7ff);
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
+    renderer.domElement.style.position = 'absolute';
+    renderer.domElement.style.top = '0';
+    renderer.domElement.style.left = '0';
 
-    camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 1, 3000);
+    camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 1, 14000);
     camera.position.y = 100;
     // camera.position.z = -500;
     // camera.lookAt(0,0,0)
@@ -135,10 +171,12 @@ function init() {
 
 
     scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0xd0e0f0, 0.00025);
+    if(!mapBuilding){
+        scene.fog = new THREE.FogExp2(0xd0e0f0, 0.00015);
+    }
     scene.add(camera);
 
-    if(mapBuilding){
+    if (mapBuilding) {
         // debug
         overCam = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 1, 30000);
         overCam.position.y = 3300;
@@ -172,7 +210,7 @@ function init() {
     var winW = window.innerWidth;
     var winH = window.innerHeight;
 
-    document.addEventListener('mousemove', function() {
+    document.addEventListener('mousemove', function(event) {
 
         if (!controls.freeze && !controls.leapControl) {
             var x = (event.pageX / winW - 0.5);
@@ -206,20 +244,20 @@ function animate() {
 
     controls.update(time - lastTime);
 
-    if(!mapBuilding){
+    if (!mapBuilding) {
         renderer.render(scene, camera);
-    }else{
+    } else {
         renderer.render(scene, overCam);
     }
 
     lastTime = time;
 
-
+    collision.check();
 }
 
-function animateStars(){
+function animateStars() {
     for (var i = 0; i < stars.length; i++) {
-        stars[i].rotation.y += (Math.random()/10)
+        stars[i].rotation.y += (Math.random() / 10)
     };
 }
 
@@ -255,8 +293,8 @@ function animateRings() {
 function hitTest() {
     var planePos = new THREE.Vector3();
 
-    if(plane.children[0]){
-        planePos.setFromMatrixPosition(plane.children[0].matrixWorld) ;
+    if (plane.children[0]) {
+        planePos.setFromMatrixPosition(plane.children[0].matrixWorld);
     }
 
     //check for the rings
@@ -266,20 +304,19 @@ function hitTest() {
         var ringPos = new THREE.Vector3(rings[i].position.x, rings[i].position.y, rings[i].position.z);
         var dT = planePos.distanceTo(ringPos);
         // console.log('distance -> ', dT);
-        if (dT < 20 && rings[i].hit != true) {
-            rings[i].material = new THREE.MeshBasicMaterial({
-                color: 0x00FF00,
-                transparent: true,
-                opacity: 0.5
-            });
+        if (dT < 22 && rings[i].hit != true) {
+
             rings[i].hit = true;
             ringsHit++;
+
             if (rings[i].final) {
-                setTimeout(function(){
+                setTimeout(function() {
                     game.endOfLevel();
-                }, 800)
+                }, 400)
 
             }
+
+            sceneMaker.ringsOut(rings[i]);
 
             game.updateScore();
         }
@@ -296,15 +333,12 @@ function hitTest() {
         var dT = planePos.distanceTo(starPos);
         // console.log('distance -> ', dT);
         if (dT < 7 && stars[i].hit != true) {
-            stars[i].material = new THREE.MeshBasicMaterial({
-                color: 0x00FF00,
-                transparent: true,
-                opacity: 0
-            });
+
             stars[i].hit = true;
             starsHit++;
-            console.log('starHit');
             createjs.Sound.play("ping");
+
+            sceneMaker.starsOut(stars[i]);
 
         }
 
@@ -315,8 +349,5 @@ function hitTest() {
         game.updateScore();
     };
 
-    if (planePos.y < 5) {
-        game.over();
-    }
 
 }

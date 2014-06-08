@@ -2,41 +2,44 @@ var game = {
     paused: false,
     sound: null,
     music: null,
-    volume: 0,
+    volume: 0.5,
     started: false,
     message: '',
     animatedRings: [],
     levelScreenActive: false,
+    hitSomething: false,
+    over: false,
     win: function() {
         // console.log('uitgespeeld, je hebt door ' + ringsHit + ' van de ' + rings.length + ' ringen gevlogen');
         // console.log('Je hebt ' + starsHit + ' van de ' + stars.length + ' sterren gevangen');
         // this.endOfLevel();
     },
-
-    over: function() {
-        controls.freeze = true;
-    },
     start: function() {
         game.started = true;
+        $('.info').hide();
         $('.info-score').addClass('active');
-        game.volume = 0.5;
+        game.volume = 1;
         game.music = createjs.Sound.play("Space Oddity", {
             loop: -1,
             volume: 0.9
         });
+        game.sound.resume();
+
         camPos = levels[level - 1].cameraStart;
         camera.position.x = camPos.x;
         camera.position.y = camPos.y;
         camera.position.z = camPos.z;
         camera.rotation.y = 0;
+
+        controls.freeze = false;
     },
     pause: function() {
 
         if (!this.paused) {
             this.paused = true;
             controls.freeze = true;
-            game.sound.volume = game.volume;
-            game.sound.pause();
+            game.sound.setMute(true);
+            // game.sound.pause();
 
             // if(game.music){
             try {
@@ -47,13 +50,15 @@ var game = {
             if (game.started) {
                 $('.pause').fadeIn(100);
             }
-        } else {
+        } else if (!game.over) {
             $('.pause').hide();
 
             this.paused = false;
-            controls.freeze = false;
-            game.sound.volume = game.volume;
-            game.sound.resume();
+            if (!game.hitSomething) {
+                controls.freeze = false;
+                game.sound.setMute(false);
+                // game.sound.resume();
+            }
 
             if (game.music) {
                 game.music.resume();
@@ -69,6 +74,8 @@ var game = {
         $('.big').css({
             right: '500%'
         });
+
+        $('.next-level-button').hide();
         //only do this after the big ticket is gone from the screen
         setTimeout(function() {
             $('.big').remove();
@@ -79,33 +86,61 @@ var game = {
             rings = [];
             stars = [];
 
+            controls.movementSpeed += 5;
+
             level++;
 
-            sceneMaker.makeRings();
 
-            camPos = levels[level - 1].cameraStart;
-            camera.position.x = camPos.x;
-            camera.position.y = camPos.y;
-            camera.position.z = camPos.z;
-            camera.rotation.y = 0;
+            if (level <= 10) {
 
-            controls.lat = 0;
-            controls.lon = 0;
-            controls.theta = 0;
-            controls.phi = 0;
+                //make a new level
+                sceneMaker.makeRings();
 
-            ringsHit = 0;
-            starsHit = 0;
+                camPos = levels[level - 1].cameraStart;
+                camera.position.x = camPos.x;
+                camera.position.y = camPos.y;
+                camera.position.z = camPos.z;
+                camera.rotation.y = 0;
 
-            controls.freeze = false;
-            game.sound.resume();
+
+
+                controls.lat = 0;
+                controls.lon = 0;
+                controls.theta = 0;
+                controls.phi = 0;
+
+                ringsHit = 0;
+                starsHit = 0;
+
+                controls.freeze = false;
+                // game.sound.resume();
+                game.sound.play({
+                    loop: -1
+                });
+                game.sound.setMute(false);
+
+                //collision related
+                camera.add(plane);
+                game.hitSomething = false;
+
+                $('.parcour').css('background-image', "url('/img/minimaps/level"+level+".png')")
+
+            } else {
+                game.over = true;
+                //show delen op facebook ofzo
+            }
+
         }, 500);
+        setTimeout(function(){
+            $('.next-level-button').hide();
+        }, 1500)
     },
     endOfLevel: function() {
 
         var newTicket = $('.info-score').clone();
         newTicket.removeClass('active');
         newTicket.removeClass('ripping');
+        newTicket.children('.next-level-button').hide();
 
         levelEnded = true;
         controls.freeze = true;
@@ -120,7 +155,9 @@ var game = {
         }, 1500)
 
         game.levelScreenActive = true;
-        game.sound.pause();
+        // game.sound.pause();
+        game.sound.setMute(true);
+
         // controls.freeze();
 
         // this.nextLevel();
@@ -129,6 +166,9 @@ var game = {
     },
     updatePauseMessage: function() {
         game.message += '<br>Press space to continue';
+        if (controls.socketControl) {
+            game.message = '<br>Press <strong>Pause</strong> on your phone to continue'
+        };
         $('.pause-message').html(game.message);
     },
     updateScore: function() {
@@ -139,14 +179,16 @@ var game = {
         $('.score-card .rings').html(ringString);
         $('.score-card .stars').html(starString);
         $('.info-score .subtitle').html(levelString);
+
+        // $('.next-level-button').hide();
     }
 }
 
 var gameControls = {
     init: function() {
         controls = new THREE.FirstPersonControls(camera);
-        controls.movementSpeed = 80;
-        controls.lookSpeed = 0.05;
+        controls.movementSpeed = 90;
+        controls.lookSpeed = 0.068;
         controls.lookVertical = true;
         controls.allowKeys = false;
         // controls.autoForward = true;
@@ -192,27 +234,33 @@ var gameControls = {
 var planeControls = {
     setWithMouse: function(x, y) {
 
-        plane.rotation.y = -x;
-        plane.rotation.z = (-1.5 * x);
-        plane.rotation.x = (-1.2 * y);
+        if (!game.leapControl && !game.socketControl) {
+            plane.rotation.y = -x;
+            plane.rotation.z = (-1.5 * x);
+            plane.rotation.x = (-1.2 * y);
 
-        plane.position.y = (-2 - 50 * y) * movementScaleY;
-        plane.position.x = x * movementScaleX;
+            plane.position.y = (-2 - 50 * y) * movementScaleY;
+            plane.position.x = x * movementScaleX;
 
-        for (var i = 0; i < planeMaterials.length; i++) {
-            var planeMaterial = planeMaterials[i] || {};
-            planeMaterial.transparent = true;
+            for (var i = 0; i < planeMaterials.length; i++) {
+                var planeMaterial = planeMaterials[i] || {};
+                planeMaterial.transparent = true;
 
-            if (y < 0) {
-                planeMaterial.opacity = 0.7;
-            } else if (y < 0.2) {
-                planeMaterial.opacity = 0.95;
-            } else {
-                planeMaterial.opacity = 1;
-            }
-        };
+                if (y < 0) {
+                    // planeMaterial.opacity = 0.7;
+                } else if (y < 0.2) {
+                    // planeMaterial.opacity = 0.95;
+                } else {
+                    planeMaterial.opacity = 1;
+                }
+            };
+        }
     },
     setWithLeap: function(rotX, rotZ) {
+        plane.rotation.x = rotX * 0.5;
+        plane.rotation.z = rotZ;
+    },
+    setWithSocket: function(rotX, rotZ) {
         plane.rotation.x = rotX * 0.5;
         plane.rotation.z = rotZ;
     },

@@ -1,0 +1,224 @@
+body {
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    background-color: #d8e7ff;
+    font-family: bebas-neue, sans-serif;
+    cursor: url(../cursor.png), auto;
+    -webkit-font-smoothing: antialiased;
+}
+*, *:before, *:after {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+canvas {
+    position: absolute;
+}
+.info {
+    position: absolute;
+    z-index: 100;
+    font-family: monospace;
+}
+.overlay {
+    position: absolute;
+    z-index: 1000;
+    width: 100%;
+    height: 100%;
+    background: #EFEFEF;
+    text-align: center;
+}
+.percentLoaded {
+    position: absolute;
+    top: 20%;
+    left: 0;
+    z-index: 1001;
+    width: 100%;
+    text-align: center;
+    font-size: 8em;
+}
+.progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    width: 0%;
+    height: 100%;
+    background: #6588D6;
+}
+
+.star-wars {
+}
+/*
+Het Ticketje
+ */
+ .ticket-holder {
+    background: red;
+}
+.info-score {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 200;
+    margin: 20px;
+    margin-right: -285px;
+    padding-top: 80px;
+    padding-right: 14px;
+    width: 300px;
+    height: 150px;
+    /*border: solid #a1582b 5px;*/
+    background: url('/img/fly-ticket.svg');
+    background-size: contain;
+    background-repeat: repeat-x;
+    color: #AD0F0F;
+    text-align: right;
+    text-align: center;
+    font-size: 10pt;
+    font-family: bebas-neue, sans-serif;
+    line-height: 60%;
+    -webkit-filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.15));
+    filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.15));
+    -webkit-transition: all 1.5s;
+    /* For Safari 3.1 to 6.0 */
+    transition: all 1.5s;
+    -webkit-font-smoothing: antialiased;
+}
+/*.info-score .title {
+    position: absolute;
+    top: 13%;
+    width: 100%;
+    text-align: center;
+    font-size: 20pt;
+}
+.info-score .subtitle {
+    position: absolute;
+    top: 21.8%;
+    width: 100%;
+    text-align: center;
+    font-size: 14pt;
+}*/
+ .info-score .title {
+    position: absolute;
+    top: 18%;
+    width: 100%;
+    text-align: center;
+    font-size: 20pt;
+}
+.info-score .subtitle {
+    position: absolute;
+    top: 32%;
+    width: 100%;
+    text-align: center;
+    font-size: 14pt;
+}
+.info-score.big .title {
+    font-size: 200%;
+}
+.info-score.big .subtitle {
+    font-size: 130%;
+}
+.info-score.active {
+    margin-right: 0px;
+}
+.info-score.ripping {
+    top: 20px;
+    right: 50px;
+    -webkit-transform: rotate(-20deg);
+    transform: rotate(-20deg);
+}
+.info-score.big {
+    top: 50%;
+    right: 50%;
+    margin-top: -200px;
+    margin-right: -400px;
+    padding-top: 200px;
+    width: 800px;
+    height: 400px;
+    font-size: 250%;
+    -webkit-transform: rotate(0) !important;
+    transform: rotate(0) !important;
+}
+/*.info-score .next-level-button {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    left: 0;
+    font-size: 75%;
+    display: none;
+    bottom: 210px;
+    color: #868686;
+    text-decoration: none;
+}*/
+ .info-score .next-level-button {
+    position: absolute;
+    right: 20px;
+    left: 0;
+    display: none;
+    bottom: 13pt;
+    width: 100%;
+    color: #868686;
+    text-align: center;
+    text-decoration: none;
+    font-size: 75%;
+}
+.score-card {
+    width: 25%;
+    margin-left: 25%;
+    margin-right: 0;
+    position: absolute;
+    top: 50%;
+}
+.score-card.right {
+    margin-left: 50%;
+}
+.score-card .score {
+    line-height: 160%;
+    font-size: 160%;
+}
+/*
+for the game menu
+ */
+ .gamenu {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 800;
+    padding-top: 2.5%;
+    width: 100%;
+    height: 100%;
+    background: #d8e7ff;
+    text-align: center;
+    /*display: none;*/
+    cursor: default;
+}
+.gamenu .title {
+    margin: 0;
+}
+.gamenu .plane {
+    float: left;
+    margin: 1.5%;
+    padding: 10px;
+    max-height: 40%;
+    width: 30%;
+    cursor: pointer;
+    /*background: orange;*/
+    /*border-radius: 500px;*/
+    /*border: solid rgba(0,0,0,0) 2px;
+	-webkit-transition: all 0.3s;*/
+}
+/*.gamenu .plane:hover{
+	border-bottom-color: rgba(0,0,0,0.2);
+	border-top-color: rgba(0,0,0,0.2);
+}*/
+ .gamenu .plane.UFO {
+    margin-left: 16.5%;
+}
+.gamenu .plane h6 {
+    margin: 0;
+    padding: 0;
+    font-size: 14pt;
+}
+.gamenu .plane img {
+    max-width: 80%;
+    max-height: 80%;
+}

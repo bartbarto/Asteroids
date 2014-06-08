@@ -22,17 +22,29 @@ var sceneMaker = {
 
 
         var l = new THREE.ObjectLoader();
-        l.load('js/island.js', function(mesh) {
+        l.load('models/islands.js', function(mesh) {
             mesh.scale.x = mesh.scale.y = mesh.scale.z = 100;
             mesh.position.x += 400;
             mesh.rotation.y = 1.57;
             scene.add(mesh);
 
-            game.pause()
-            setTimeout(function() {
-                game.pause()
-            }, 100)
+            // collidableMeshList.push()
+
+            for (i = 0; i < mesh.children.length; i++) {
+
+                if(mesh.children[i].children[0].name != 'Beak'){ //exclude the ducks
+                    collidableMeshList.push(mesh.children[i].children[0]);
+                }
+
+            }
+
+            // game.pause()
+            // setTimeout(function() {
+            //     game.pause()
+            // }, 100)
         })
+
+        this.cloudinator();
         //
         //
         // var mesh, texture;
@@ -92,12 +104,14 @@ var sceneMaker = {
         var ringMat = new THREE.MeshLambertMaterial({
             emissive: 0x606060,
             map: texture,
-            color: 0xffffff
+            color: 0xffffff,
+            transparent: true
         });
         var ringFinalMat = new THREE.MeshBasicMaterial({
             emissive: 0x606060,
             map: finalTexture,
             color: 0xFFFFFF,
+            transparent: true
         });
         var ring = new THREE.Mesh(ringGeo, ringMat);
 
@@ -223,8 +237,94 @@ var sceneMaker = {
             scene.remove(stars[i]);
         };
     },
+    cloudinator: function() {
+        var cl = new THREE.ObjectLoader();
+        cl.load('models/cloud.js', function(mesh) {
+
+            var texture = THREE.ImageUtils.loadTexture('img/cloud10.png', null, animate);
+            texture.magFilter = THREE.LinearMipMapLinearFilter;
+            texture.minFilter = THREE.LinearMipMapLinearFilter;
+
+            var fog = new THREE.Fog(0x4584b4, -100, 3000);
+
+            mesh.children[0].children[0].material = new THREE.MeshBasicMaterial({
+                color: 0xFFFFFF,
+                transparent: true,
+                opacity: 0.6,
+                emmisive: 0xffffff
+            });
+
+            // console.log(mesh.children[0].children[0]);
+            // var plMesh = new THREE.Mesh(pl, material);
+
+            for (var i = 0; i < 300; i++) {
+
+                var cloudPos = new THREE.Vector3(-5000 + (10000 * Math.random()),
+                    700 * Math.random() + 30, -2500 + (5000 * Math.random()));
+                var newCloud = mesh.clone();
+
+                var scale = 0.1 + Math.random() / 2.5;
+
+                newCloud.scale.set(scale, scale, scale);
+                newCloud.position.set(cloudPos.x, cloudPos.y, cloudPos.z);
+                newCloud.rotation.set(-1 + Math.random() * 2, -1.5 + Math.random() * 3, -1 + Math.random() * 2)
+
+                scene.add(newCloud);
+
+
+            };
+        })
+
+    },
+    ringsOut: function(ring){
+
+        ring.material = ring.material.clone();
+
+        var rotAndScaleInt = setInterval(function(){
+            ring.rotation.z -= 0.2;
+            ring.scale.z += 0.05;
+            ring.material.opacity -= 0.02;
+        },10)
+
+        setTimeout(function(){
+            clearInterval(rotAndScaleInt);
+        }, 1000)
+    },
+    starsOut: function(star){
+
+        var rotAndScaleInt = setInterval(function(){
+            star.rotation.y += 0.5;
+            star.scale.x -= 0.1;
+            star.scale.y -= 0.1;
+            star.scale.z -= 0.1;
+        },20)
+
+        setTimeout(function(){
+            clearInterval(rotAndScaleInt);
+            scene.remove(star);
+        }, 400)
+    }
+
 };
 
+// var clouds = [];
+
+function average(x, y) {
+    return (x + y) / 2;
+}
+
+
+window.addEventListener('resize', function() {
+    if (renderer && camera) {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+}, true);
+
+
+//for automatix terrain generation
 function generateHeight(width, height) {
 
     var size = width * height,
@@ -317,16 +417,4 @@ function generateTexture(data, width, height) {
 
 }
 
-function average(x, y) {
-    return (x + y) / 2;
-}
 
-
-window.addEventListener('resize', function() {
-    if (renderer && camera) {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-
-        renderer.setSize(window.innerWidth, window.innerHeight);
-    }
-}, true);

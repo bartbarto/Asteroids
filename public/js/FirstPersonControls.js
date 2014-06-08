@@ -57,6 +57,7 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 	this.allowKeys = true;
 
 	this.leapControl = false; // --> niet vergeten op false te zetten als er andere shite wordt gekozen
+	this.socketControl = false; // --> niet vergeten op false te zetten als er andere shite wordt gekozen
 
 	if ( this.domElement !== document ) {
 
@@ -130,12 +131,12 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 
 	this.onMouseMove = function ( event ) {
 
-		if ( this.domElement === document && !this.leapControl) {
+		if ( this.domElement === document && !this.leapControl && !this.socketControl) {
 
 			this.mouseX = (event.pageX - this.viewHalfX) * this.movementScale;
 			this.mouseY = (event.pageY - this.viewHalfY) * this.movementScale;
 
-		} else if(!this.leapControl){
+		} else if(!this.leapControl && !this.socketControl){
 
 			this.mouseX = (event.pageX - this.domElement.offsetLeft - this.viewHalfX) * this.movementScale;
 			this.mouseY = (event.pageY - this.domElement.offsetTop - this.viewHalfY) * this.movementScale;
@@ -152,6 +153,13 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 		}
 
 	};
+
+	this.socketMove = function(leftRight, upDown){
+		if(this.socketControl){
+			this.mouseX = -(1.7*leftRight) * this.viewHalfX;
+			this.mouseY = -(1.5*upDown) * this.viewHalfY;
+		}
+	}
 
 	this.onKeyDown = function ( event ) {
 

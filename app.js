@@ -64,30 +64,35 @@ io.sockets.on('connection', function(socket) {
         // console.log('currentroom: ', roomio);
         // console.log(data);
         if(roomio){
-            io.sockets.in(roomio).emit('message', data);
+            io.sockets.in(data.room).emit('message', data);
         }
     })
 
-    socket.on('test', function(data) {
-        // console.log(data);
-        io.sockets.in(roomio).emit('test', data);
-    })
 
     socket.on('motionData', function(data) {
         // console.log(data);
         if(roomio){
-            io.sockets.in(roomio).emit('motionDataOut', data);
+            io.sockets.in(data.room).emit('motionDataOut', data);
         }
         // io.sockets.emit('motionDataOut', data);
     })
 
-    socket.on('move', function(data) {
-        // console.log('move', data);
+    socket.on('command', function(data) {
+        // console.log('currentroom: ', roomio);
+        // console.log(data);
+
         if(roomio){
-            io.sockets.in(roomio).emit('moved', data);
+            switch(data.to){
+                case 'mobile':
+                    io.sockets.in(data.room).emit('commandToMobile', data);
+                    break;
+                case 'desktop':
+                    io.sockets.in(data.room).emit('commandToDesktop', data);
+                    break;
+            }
         }
-        // io.sockets.emit('motionDataOut', data);
     })
+
 });
 
 // now, it's easy to send a message to just the clients in a given room

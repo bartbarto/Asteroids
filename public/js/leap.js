@@ -35,7 +35,7 @@ var leapController = {
 
                 if(!controls.freeze && controls.leapControl){
                     controls.leapMove(rotationZ, rotationX);
-                    $('.info').html('rotZ ->' + rotationZ+' -- rotX ->' + rotationX);
+                    // $('.info').html('rotZ ->' + rotationZ+' -- rotX ->' + rotationX);
 
                     planeControls.setWithLeap(rotationX, rotationZ);
                 }
