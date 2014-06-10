@@ -2,7 +2,7 @@
  * @author mrdoob / http://mrdoob.com/
  * @author alteredq / http://alteredqualia.com/
  * @author paulirish / http://paulirish.com/
- * Edited By Bart Van Itterbeeck to disable going backwards and forwards with mouse
+ * Edited By Bart Van Itterbeeck
  * and to toggle keyControl
  */
 

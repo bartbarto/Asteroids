@@ -17,7 +17,11 @@ meer landschappen ✓
 
 Minimap ✓
 
+Game over scherm
+
 vuurwerk
+
+levens
 
 countdown voor begin level
 
@@ -122,7 +126,10 @@ $(function() {
         }, {
             id: "Space Oddity",
             src: "/sounds/space_oddity.mp3"
-        }
+        }, {
+            id: "Space Oddity",
+            src: "/sounds/space_oddity.mp3"
+        }, "/img/minimaps/level1.png", "/img/minimaps/level2.png", "/img/minimaps/level3.png", "/img/minimaps/level4.png", "/img/minimaps/level5.png", "/img/minimaps/level6.png", "/img/minimaps/level7.png", "/img/minimaps/level8.png", "/img/minimaps/level9.png", "/img/minimaps/level10.png", "/img/planes/F22.png", "/img/planes/falcon.png", "/img/planes/plane_main.png", "/img/planes/toy_plane.png", "/img/planes/UFO.png"
     ]);
 
 
@@ -170,7 +177,7 @@ function init() {
 
 
     scene = new THREE.Scene();
-    if(!mapBuilding){
+    if (!mapBuilding) {
         scene.fog = new THREE.FogExp2(0xd0e0f0, 0.00015);
     }
     scene.add(camera);
@@ -211,7 +218,7 @@ function init() {
 
     document.addEventListener('mousemove', function(event) {
 
-        if (!controls.freeze && !controls.leapControl) {
+        if (!controls.freeze && !controls.leapControl && !controls.socketControl) {
             var x = (event.pageX / winW - 0.5);
             var y = (event.pageY / winH - 0.5);
 

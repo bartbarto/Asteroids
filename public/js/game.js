@@ -38,8 +38,9 @@ var game = {
         if (!this.paused) {
             this.paused = true;
             controls.freeze = true;
-            game.sound.setMute(true);
-            // game.sound.pause();
+            if(game.sound){
+                game.sound.setMute(true);
+            }
 
             // if(game.music){
             try {

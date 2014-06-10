@@ -25,6 +25,7 @@ var socketController = {
     },
     connect: function() {
         socketController.socket.on('connect', this.socketConnected);
+        socketController.socket.on('mobile_disconnect', this.socketDisconnected);
         socketController.socket.on('message', this.socketMessage);
         socketController.socket.on('motionDataOut', this.socketMotionDataOut);
         socketController.socket.on('commandToDesktop', this.command);
@@ -37,12 +38,24 @@ var socketController = {
         socketController.socket.emit('message', {
             msg: 'client joined room with ID ' + room
         });
+
+    },
+    socketDisconnected: function(){
+        // console.log('lost connection')
+        showNotification('Phone Connection lost')
+
+        if(!game.paused){
+            game.updatePauseMessage();
+            game.pause();
+        }
     },
     socketMessage: function(data) {
         console.log('Incoming message:', data);
         if (data.msg.indexOf('mobile joined') != -1 && !socketController.controllerJoined) {
             controls.socketControl = true;
 
+            $('.next-level-button').html('Press <strong>next</strong> to continue');
+            showNotification('Phone Connected')
             //send the plane when the mobile joins
             socketController.sendPlane(planePicked);
 
@@ -96,6 +109,7 @@ var socketController = {
                 case 'start':
                     if(!game.started){
                         game.start()
+                        game.paused = false;
                     }
                     break;
                 case 'stop':
