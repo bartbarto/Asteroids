@@ -25,7 +25,7 @@ var socketController = {
     },
     connect: function() {
         socketController.socket.on('connect', this.socketConnected);
-        socketController.socket.on('mobile_disconnect', this.socketDisconnected);
+
         socketController.socket.on('message', this.socketMessage);
         socketController.socket.on('motionDataOut', this.socketMotionDataOut);
         socketController.socket.on('commandToDesktop', this.command);
@@ -35,16 +35,19 @@ var socketController = {
     socketConnected: function() {
         // Connected, let's sign-up for to receive messages for this room
         socketController.socket.emit('room', room.toUpperCase());
+
         socketController.socket.emit('message', {
             msg: 'client joined room with ID ' + room
         });
 
     },
-    socketDisconnected: function(){
-        // console.log('lost connection')
-        showNotification('Phone Connection lost')
+    socketDisconnected: function(data){
+        console.log('lost connection', data)
+        if(data.room == room){
+            showNotification('Phone Connection lost')
+        }
 
-        if(!game.paused){
+        if(!game.paused && controls.socketControl){
             game.updatePauseMessage();
             game.pause();
         }

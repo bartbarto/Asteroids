@@ -16,7 +16,7 @@ var game = {
     },
     start: function() {
         game.started = true;
-        $('.info').hide();
+        $('.info').removeClass('slide_down');
         $('.info-score').addClass('active');
         game.volume = 1;
         game.music = createjs.Sound.play("Space Oddity", {

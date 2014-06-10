@@ -12,12 +12,19 @@ var leapController = {
         controller = new Leap.Controller();
         controller.connect();
 
-        controller.on('connect', this.controllerConnected)
+        controller.on('streamingStarted', this.controllerConnected)
+        controller.on('streamingStopped', this.controllerDisconnected)
         controller.on('animationFrame', this.onAnimationframe)
     },
     controllerConnected: function() {
         console.log('Leap connected')
+        showNotification('Leap connected')
         this.leapConnected = true;
+    },
+    controllerDisconnected: function() {
+        console.log('Leap connected')
+        showNotification('Leap disconnected')
+        this.leapConnected = false;
     },
     onAnimationframe: function(frame) {
         // your code here

@@ -95,7 +95,7 @@ io.sockets.on('connection', function(socket) {
 
     socket.on('disconnect', function(){
         // console.log('Disconnected', roomio)
-        socket.broadcast.to(roomio).emit('mobile_disconnect', {room: roomio, bart: 'is leuk'});
+        socket.broadcast.to(roomio).emit('mobile_disconnect', {room: roomio});
     });
 
 });
