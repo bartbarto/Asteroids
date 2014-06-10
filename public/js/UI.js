@@ -49,6 +49,30 @@ $(function(){
 	$('.play').on('click', function(){
 		game.start();
 	})
+
+	$('.score-submit').on('click', function(){
+
+		var name = $('.user-name').val();
+		var score = game.score;
+		var plane = planePicked;
+		var rings = game.totalRingsGame;
+		var stars = game.totalStarsGame;
+
+		$.post( "http://kermisdatabasevanbartenrobbert.herokuapp.com/addhighscore/fly",
+			{ 	name: name,
+				score: score,
+				plane: plane,
+				rings: rings,
+				stars: stars
+			} )
+		.done(function(){
+			$('.score-submit').hide();
+			$('.game-over').append('score succesully shared.')
+
+		}).fail(function(){
+			$('.game-over').append('something went wrong, please try again')
+		});
+	})
 })
 
 function showNotification(text){

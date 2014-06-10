@@ -217,7 +217,7 @@ button:focus, button:active {
             left: 0;
             width: 100%;
             text-align: center;
-            .play{
+            .play {
                 font-family: bebas-neue, sans-serif;
                 -webkit-font-smoothing: antialiased;
                 background: @highlight;
@@ -240,7 +240,7 @@ button:focus, button:active {
             p {
                 padding-top: 15%;
             }
-            video{
+            video {
                 -webkit-filter: brightness(94%);
                 filter: brightness(94%);
             }
@@ -261,6 +261,56 @@ button:focus, button:active {
                 font-size: 19pt;
             }
         }
+    }
+}
+.game-over {
+    position: absolute;
+    top:200%;
+    min-height: 400px;
+    width: 100%;
+    font-size: 16pt;
+    // height: 60%;
+    background: #EFEFEF;
+    color:@highlight;
+    text-align: center;
+    font-weight: 200;
+    opacity: 0.95;
+    -webkit-transition: all .7s ease;
+    -moz-transition: all .7s ease;
+    -ms-transition: all .7s ease;
+    -o-transition: all .7s ease;
+    transition: all .7s ease;
+    z-index: 20000;
+    -webkit-user-select: auto;
+    &.slide-up {
+        top: 20% !important;
+    }
+    input, button {
+        width: 40%;
+        height: 30px;
+        background-color: rgba(0, 0, 0, 0);
+        outline: none;
+        margin:16pt;
+        position: relative;
+        border:none;
+        font-size: 18pt;
+        z-index: 20001;
+    }
+    input {
+        border-bottom : #e6414b dashed 3px;
+        color: #e6414b;
+        font-family: bebas-neue, sans-serif;
+        -webkit-user-select: auto;
+    }
+    button {
+        background-color: #e6414b;
+        border-radius: 10px;
+        padding:10px;
+        height: 40px;
+        color:white;
+        font-family: bebas-neue, sans-serif;
+        letter-spacing: 1px;
+        cursor: pointer;
     }
 }
 /**
@@ -506,8 +556,7 @@ Pause screen
     background-size: contain;
     background-repeat: no-repeat;
 }
-
-.notification{
+.notification {
     position: absolute;
     top: -100px;
     left: 20%;
@@ -524,7 +573,7 @@ Pause screen
     -ms-transition: all .7s ease;
     -o-transition: all .7s ease;
     transition: all .7s ease;
-    &.active{
+    &.active {
         top: 20px;
     }
 }

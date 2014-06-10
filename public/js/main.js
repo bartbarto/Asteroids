@@ -314,6 +314,7 @@ function hitTest() {
 
             rings[i].hit = true;
             ringsHit++;
+            game.totalRingsGame++;
 
             if (rings[i].final) {
                 setTimeout(function() {
@@ -342,6 +343,7 @@ function hitTest() {
 
             stars[i].hit = true;
             starsHit++;
+            game.totalStarsGame++;
             createjs.Sound.play("ping");
 
             sceneMaker.starsOut(stars[i]);

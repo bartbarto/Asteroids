@@ -55,6 +55,7 @@ var collision = {
             game.hitSomething = true;
             planeMaker.makePlaneExplode();
             console.log('te laag');
+            game.crashes++;
         }
 
         // collision.check(true);

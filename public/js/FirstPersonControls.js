@@ -91,8 +91,10 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 
 		}
 
-		event.preventDefault();
-		event.stopPropagation();
+		if(!game.over){
+			event.preventDefault();
+			event.stopPropagation();
+		}
 
 		if ( this.activeLook ) {
 

@@ -9,6 +9,10 @@ var game = {
     levelScreenActive: false,
     hitSomething: false,
     over: false,
+    totalRingsGame: 0,
+    totalStarsGame: 0,
+    crashes: 0,
+    score: 0,
     win: function() {
         // console.log('uitgespeeld, je hebt door ' + ringsHit + ' van de ' + rings.length + ' ringen gevlogen');
         // console.log('Je hebt ' + starsHit + ' van de ' + stars.length + ' sterren gevangen');
@@ -35,10 +39,10 @@ var game = {
     },
     pause: function() {
 
-        if (!this.paused) {
+        if (!this.paused && !game.over) {
             this.paused = true;
             controls.freeze = true;
-            if(game.sound){
+            if (game.sound) {
                 game.sound.setMute(true);
             }
 
@@ -79,20 +83,22 @@ var game = {
         $('.next-level-button').hide();
         //only do this after the big ticket is gone from the screen
         setTimeout(function() {
-            $('.big').remove();
-            $('.next-level-button').hide();
-            $('.info-score').addClass('active');
-            game.levelScreenActive = false;
-            sceneMaker.removeRings();
-            rings = [];
-            stars = [];
 
-            controls.movementSpeed += 5;
 
             level++;
 
 
             if (level <= 10) {
+
+                $('.big').remove();
+                $('.next-level-button').hide();
+                $('.info-score').addClass('active');
+                game.levelScreenActive = false;
+                sceneMaker.removeRings();
+                rings = [];
+                stars = [];
+
+                controls.movementSpeed += 5;
 
                 //make a new level
                 sceneMaker.makeRings();
@@ -110,6 +116,7 @@ var game = {
                 controls.theta = 0;
                 controls.phi = 0;
 
+
                 ringsHit = 0;
                 starsHit = 0;
 
@@ -124,15 +131,22 @@ var game = {
                 camera.add(plane);
                 game.hitSomething = false;
 
-                $('.parcour').css('background-image', "url('/img/minimaps/level"+level+".png')")
+                $('.parcour').css('background-image', "url('/img/minimaps/level" + level + ".png')")
 
             } else {
                 game.over = true;
+
                 //show delen op facebook ofzo
+                game.score = (game.totalRingsGame * 10) + (game.totalStarsGame * 5);
+
+                var msgString = 'You have a score of ' + game.score + ', with  ' + game.totalRingsGame + ' total rings,' + ' and  ' + game.totalStarsGame + ' total stars.' + ' You have crashed  ' + game.totalStarsGame + ' times.'
+
+                $('.message-final').html(msgString);
+                $('.game-over').addClass('slide-up');
             }
 
         }, 500);
-        setTimeout(function(){
+        setTimeout(function() {
             $('.next-level-button').hide();
         }, 1500)
     },
@@ -183,6 +197,34 @@ var game = {
 
         // $('.next-level-button').hide();
     }
+    // reset: function() {
+    //     game.paused = false;
+    //     game.sound = null;
+    //     game.music = null;
+    //     game.volume = 0.5;
+    //     game.started = false;
+    //     game.message = '';
+    //     game.animatedRings = [];
+    //     game.levelScreenActive = false;
+    //     game.hitSomething = false;
+    //     game.over = false;
+    //     game.totalRingsGame = 0;
+    //     game.totalStarsGame = 0;
+    //     game.crashes = 0;
+    //     game.score = 0;
+
+    //     rings = [];
+    //     stars = [];
+    //     ringsHit = 0;
+    //     starsHit = 0;
+    //     levelEnded = false;
+    //     gameOver = false;
+
+    //     level = 1;
+
+    //     $('.info').addClass('.slide_down')
+    //     $('.gamenu').show();
+    // }
 }
 
 var gameControls = {
