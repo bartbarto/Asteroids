@@ -57,13 +57,15 @@ $(function(){
 		var plane = planePicked;
 		var rings = game.totalRingsGame;
 		var stars = game.totalStarsGame;
+		var crashes = game.crashes;
 
 		$.post( "http://kermisdatabasevanbartenrobbert.herokuapp.com/addhighscore/fly",
 			{ 	name: name,
 				score: score,
 				plane: plane,
 				rings: rings,
-				stars: stars
+				stars: stars,
+				crashes: crashes
 			} )
 		.done(function(){
 			$('.score-submit').hide();
