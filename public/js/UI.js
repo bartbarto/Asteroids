@@ -52,6 +52,9 @@ $(function(){
 
 	$('.score-submit').on('click', function(){
 
+		$('.score-submit').hide();
+		$('.game-over').append('<span class="score-message">Sharing Score</span>');
+
 		var name = $('.user-name').val();
 		var score = game.score;
 		var plane = planePicked;
@@ -69,10 +72,11 @@ $(function(){
 			} )
 		.done(function(){
 			$('.score-submit').hide();
-			$('.game-over').append('score succesully shared.')
+			$('.score-message').html('score succesully shared.')
 
 		}).fail(function(){
-			$('.game-over').append('something went wrong, please try again')
+			$('.score-message').html('something went wrong, please try again');
+			$('.score-submit').show();
 		});
 	})
 })
