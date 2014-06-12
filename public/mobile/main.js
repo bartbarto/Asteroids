@@ -24,6 +24,8 @@ var motionD = {
     room: room
 };
 
+var allowed = false;
+
 $(function() {
 
     socket.on('connect', function() {
@@ -40,6 +42,17 @@ $(function() {
     socket.on('message', function(data) {
         console.log('Incoming message:', data.msg);
     });
+
+    socket.on('roomJoined', function(roomdata){
+        if (roomdata.length < 3) {
+            allowed = true;
+        }else{
+
+        }
+        if(!allowed){
+            $('.connect').html('Not allowed, 2nd controller');
+        }
+    })
 
     socket.on('commandToMobile', function(data) {
         if(data.switch){
@@ -101,17 +114,19 @@ $(function() {
 })
 
 setInterval(function() {
-    socket.emit('motionData', motionD)
-    // socket.emit('message', motionD)
-    // $('.x3').html('motion data: ', motionD)
+    if(allowed){
+        socket.emit('motionData', motionD)
+    }
 }, 1000 / 30)
 
 function sendCommand(command){
-    socket.emit('command', {
-        room: room,
-        to: 'desktop',
-        command: command
-    })
+    if(allowed){
+        socket.emit('command', {
+            room: room,
+            to: 'desktop',
+            command: command
+        })
+    }
 }
 
 /////// to get room from URL //////////

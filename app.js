@@ -56,6 +56,9 @@ io.sockets.on('connection', function(socket) {
 
         if(roomio){
             socket.join(roomio);
+            roomdata = io.sockets.manager.rooms['/'+roomio];
+            console.log('current room ->', roomdata);
+            io.sockets.in(roomio).emit('roomJoined', roomdata);
         }
         // console.log('room room:', roomio)
     });
@@ -99,9 +102,3 @@ io.sockets.on('connection', function(socket) {
     });
 
 });
-
-// now, it's easy to send a message to just the clients in a given room
-// io.sockets.in(room).emit('message', 'what is going on, party people?');
-
-// this message will NOT go to the client defined above
-io.sockets. in ('foobar').emit('message', 'anyone in this room yet?');

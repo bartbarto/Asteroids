@@ -75,7 +75,7 @@ $(function(){
 			$('.score-message').html('score succesully shared.')
 
 		}).fail(function(){
-			$('.score-message').html('something went wrong, please try again');
+			$('.score-message').html('something went wrong, please try again').delay(4000).fadeOut();
 			$('.score-submit').show();
 		});
 	})
