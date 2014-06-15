@@ -129,7 +129,7 @@ $(function() {
         }, {
             id: "Space Oddity",
             src: "/sounds/space_oddity.mp3"
-        }, "/img/minimaps/level1.png", "/img/minimaps/level2.png", "/img/minimaps/level3.png", "/img/minimaps/level4.png", "/img/minimaps/level5.png", "/img/minimaps/level6.png", "/img/minimaps/level7.png", "/img/minimaps/level8.png", "/img/minimaps/level9.png", "/img/minimaps/level10.png", "/img/planes/F22.png", "/img/planes/falcon.png", "/img/planes/plane_main.png", "/img/planes/toy_plane.png", "/img/planes/UFO.png"
+        }, "/img/minimaps/level1.png", "/img/minimaps/level2.png", "/img/minimaps/level3.png", "/img/minimaps/level4.png", "/img/minimaps/level5.png", "/img/minimaps/level6.png", "/img/minimaps/level7.png", "/img/minimaps/level8.png", "/img/minimaps/level9.png", "/img/minimaps/level10.png", "/img/planes/F22.png", "/img/planes/falcon.png", "/img/planes/plane_main.png", "/img/planes/toy_plane.png", "/img/planes/UFO.png", "/img/minimaps/map.png"
     ]);
 
 
