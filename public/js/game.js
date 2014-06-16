@@ -25,7 +25,7 @@ var game = {
         game.volume = 1;
         game.music = createjs.Sound.play("Space Oddity", {
             loop: -1,
-            volume: 0.9
+            volume: 0.0
         });
         game.sound.resume();
 
